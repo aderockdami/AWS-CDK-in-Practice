@@ -200,7 +200,7 @@ export class PipelineStack extends Construct {
           actionName: 'Source',
           owner: 'aderockdami',
           repo: 'AWS-CDK-in-Practice',
-          branch: `main`,
+          branch: 'main',
           oauthToken: secretToken,
           output: outputSource,
           trigger: GitHubTrigger.WEBHOOK,
