@@ -21,7 +21,7 @@ import config from '../../../../config.json';
 interface Props {
   rds: RDS;
   vpc: Vpc;
-  acm: ACM;
+  // acm: ACM;
   route53: Route53;
 }
 
@@ -116,9 +116,9 @@ export class ECS extends Construct {
     this.listener = this.load_balancer.addListener(
       `PublicListener-${process.env.NODE_ENV || ''}`,
       {
-        port: 443,
+        port: 80,
         open: true,
-        certificates: [props.acm.certificate],
+        // certificates: [props.acm.certificate],
       },
     );
 

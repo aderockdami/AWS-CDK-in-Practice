@@ -11,6 +11,8 @@ import { Distribution, ViewerProtocolPolicy } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { ARecord, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { CloudFrontTarget } from 'aws-cdk-lib/aws-route53-targets';
+import * as targets from 'aws-cdk-lib/aws-route53-targets';
+
 
 import { Route53 } from '../Route53';
 import { ACM } from '../ACM';
@@ -18,7 +20,7 @@ import { ACM } from '../ACM';
 import config from '../../../../config.json';
 
 interface Props {
-  acm: ACM;
+  // acm: ACM;
   route53: Route53;
 }
 
@@ -69,24 +71,27 @@ export class S3 extends Construct {
         ? config.frontend_subdomain
         : config.frontend_dev_subdomain;
 
-    this.distribution = new Distribution(
-      scope,
-      `Frontend-Distribution-${process.env.NODE_ENV || ''}`,
-      {
-        certificate: props.acm.certificate,
-        domainNames: [`${frontEndSubDomain}.${config.domain_name}`],
-        defaultRootObject: 'index.html',
-        defaultBehavior: {
-          origin: new S3Origin(this.web_bucket),
-          viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        },
-      },
-    );
+    // this.distribution = new Distribution(
+    //   scope,
+    //   `Frontend-Distribution-${process.env.NODE_ENV || ''}`,
+    //   {
+    //     certificate: props.acm.certificate,
+    //     domainNames: [`${frontEndSubDomain}.${config.domain_name}`],
+    //     defaultRootObject: 'index.html',
+    //     defaultBehavior: {
+    //       origin: new S3Origin(this.web_bucket),
+    //       viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+    //     },
+    //   },
+    // );
 
     new ARecord(scope, `FrontendAliasRecord-${process.env.NODE_ENV || ''}`, {
       zone: props.route53.hosted_zone,
-      target: RecordTarget.fromAlias(new CloudFrontTarget(this.distribution)),
+      // target: RecordTarget.fromAlias(new CloudFrontTarget(this.distribution)),
       recordName: `${frontEndSubDomain}.${config.domain_name}`,
+      target: RecordTarget.fromAlias(
+        new targets.BucketWebsiteTarget(this.web_bucket),
+      ),
     });
 
     new CfnOutput(scope, `FrontendURL-${process.env.NODE_ENV || ''}`, {

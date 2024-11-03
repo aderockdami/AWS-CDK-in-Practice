@@ -9,7 +9,7 @@ import { Route53 } from './constructs/Route53';
 import { ACM } from './constructs/ACM';
 
 export class Chapter5Stack extends Stack {
-  public readonly acm: ACM;
+  // public readonly acm: ACM;
 
   public readonly ecs: ECS;
 
@@ -26,9 +26,9 @@ export class Chapter5Stack extends Stack {
 
     this.route53 = new Route53(this, `Route53-${process.env.NODE_ENV || ''}`);
 
-    this.acm = new ACM(this, `ACM-${process.env.NODE_ENV || ''}`, {
-      hosted_zone: this.route53.hosted_zone,
-    });
+    // this.acm = new ACM(this, `ACM-${process.env.NODE_ENV || ''}`, {
+    //   hosted_zone: this.route53.hosted_zone,
+    // });
 
     const cidr =
       process.env.NODE_ENV === 'Production' ? '10.0.0.0/16' : '10.1.0.0/16';
@@ -56,7 +56,7 @@ export class Chapter5Stack extends Stack {
     });
 
     this.s3 = new S3(this, `S3-${process.env.NODE_ENV || ''}`, {
-      acm: this.acm,
+      // acm: this.acm,
       route53: this.route53,
     });
 
@@ -67,7 +67,7 @@ export class Chapter5Stack extends Stack {
     this.ecs = new ECS(this, `ECS-${process.env.NODE_ENV || ''}`, {
       rds: this.rds,
       vpc: this.vpc,
-      acm: this.acm,
+      // acm: this.acm,
       route53: this.route53,
     });
 
