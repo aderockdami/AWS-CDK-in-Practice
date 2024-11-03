@@ -184,7 +184,7 @@ export class DevelopmentPipeline extends Construct {
           actionName: 'Source',
           owner: 'aderockdami',
           repo: 'AWS-CDK-in-Practice',
-          branch: 'dev',
+          branch: 'master',
           oauthToken: secretToken,
           output: outputSource,
           trigger: GitHubTrigger.WEBHOOK,
