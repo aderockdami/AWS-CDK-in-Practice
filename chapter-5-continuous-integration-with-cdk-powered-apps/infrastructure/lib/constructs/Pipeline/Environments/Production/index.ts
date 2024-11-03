@@ -74,7 +74,7 @@ export class ProductionPipeline extends Construct {
             },
             pre_build: {
               'on-failure': 'ABORT',
-              commands: ['cd server/', 'yarn install'],
+              commands: ['yarn install'],
             },
             build: {
               'on-failure': 'ABORT',
@@ -182,8 +182,8 @@ export class ProductionPipeline extends Construct {
       actions: [
         new GitHubSourceAction({
           actionName: 'Source',
-          owner: 'westpoint-io',
-          repo: 'AWS-CDK-in-Action-Chapter-5',
+          owner: 'aderockdami',
+          repo: 'AWS-CDK-in-Practice',
           branch: 'master',
           oauthToken: secretToken,
           output: outputSource,

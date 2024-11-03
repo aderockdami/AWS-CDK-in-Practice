@@ -14,9 +14,9 @@ import {
 } from 'aws-cdk-lib/aws-codebuild';
 
 import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
-import { Topic } from 'aws-cdk-lib/aws-sns';
-import { SlackChannelConfiguration } from 'aws-cdk-lib/aws-chatbot';
-import { NotificationRule } from 'aws-cdk-lib/aws-codestarnotifications';
+// import { Topic } from 'aws-cdk-lib/aws-sns';
+// import { SlackChannelConfiguration } from 'aws-cdk-lib/aws-chatbot';
+// import { NotificationRule } from 'aws-cdk-lib/aws-codestarnotifications';
 import { pipelineConfig } from '../../../utils/pipelineConfig';
 
 interface Props {
@@ -40,8 +40,8 @@ export class PipelineStack extends Construct {
       branch,
       tag,
       githubToken,
-      workspaceId,
-      channelId,
+      // workspaceId,
+      // channelId,
     } = pipelineConfig(props.environment);
 
     /* ---------- Pipeline Configs ---------- */
@@ -84,7 +84,10 @@ export class PipelineStack extends Construct {
             },
             pre_build: {
               'on-failure': 'ABORT',
-              commands: ['cd server/', 'yarn install'],
+              commands: [
+                'cd chapter-5-continuous-integration-with-cdk-powered-apps/server/',
+                'yarn install',
+              ],
             },
             build: {
               'on-failure': 'ABORT',
@@ -117,7 +120,7 @@ export class PipelineStack extends Construct {
             pre_build: {
               'on-failure': 'ABORT',
               commands: [
-                'cd web',
+                'cd chapter-5-continuous-integration-with-cdk-powered-apps/web/',
                 'yarn install',
                 'cd ../server',
                 'yarn install',
@@ -166,7 +169,10 @@ export class PipelineStack extends Construct {
             },
             pre_build: {
               'on-failure': 'ABORT',
-              commands: ['cd web/', 'yarn install'],
+              commands: [
+                'cd chapter-5-continuous-integration-with-cdk-powered-apps/web/',
+                'yarn install',
+              ],
             },
             build: {
               'on-failure': 'ABORT',
@@ -192,9 +198,9 @@ export class PipelineStack extends Construct {
       actions: [
         new GitHubSourceAction({
           actionName: 'Source',
-          owner: 'westpoint-io',
-          repo: 'AWS-CDK-in-Action-Chapter-5',
-          branch: `${branch}`,
+          owner: 'aderockdami',
+          repo: 'AWS-CDK-in-Practice',
+          branch: `main`,
           oauthToken: secretToken,
           output: outputSource,
           trigger: GitHubTrigger.WEBHOOK,
@@ -238,31 +244,31 @@ export class PipelineStack extends Construct {
       ],
     });
 
-    const snsTopic = new Topic(
-      this,
-      `${props.environment}-Pipeline-SlackNotificationsTopic`,
-    );
+    // const snsTopic = new Topic(
+    //   this,
+    //   `${props.environment}-Pipeline-SlackNotificationsTopic`,
+    // );
 
-    const slackConfig = new SlackChannelConfiguration(this, 'SlackChannel', {
-      slackChannelConfigurationName: `${props.environment}-Pipeline-Slack-Channel-Config`,
-      slackWorkspaceId: workspaceId || '',
-      slackChannelId: channelId || '',
-    });
+    // const slackConfig = new SlackChannelConfiguration(this, 'SlackChannel', {
+    //   slackChannelConfigurationName: `${props.environment}-Pipeline-Slack-Channel-Config`,
+    //   slackWorkspaceId: workspaceId || '',
+    //   slackChannelId: channelId || '',
+    // });
 
-    const rule = new NotificationRule(this, 'NotificationRule', {
-      source: this.pipeline,
-      events: [
-        'codepipeline-pipeline-pipeline-execution-failed',
-        'codepipeline-pipeline-pipeline-execution-canceled',
-        'codepipeline-pipeline-pipeline-execution-started',
-        'codepipeline-pipeline-pipeline-execution-resumed',
-        'codepipeline-pipeline-pipeline-execution-succeeded',
-        'codepipeline-pipeline-manual-approval-needed',
-      ],
-      targets: [snsTopic],
-    });
+    // const rule = new NotificationRule(this, 'NotificationRule', {
+    //   source: this.pipeline,
+    //   events: [
+    //     'codepipeline-pipeline-pipeline-execution-failed',
+    //     'codepipeline-pipeline-pipeline-execution-canceled',
+    //     'codepipeline-pipeline-pipeline-execution-started',
+    //     'codepipeline-pipeline-pipeline-execution-resumed',
+    //     'codepipeline-pipeline-pipeline-execution-succeeded',
+    //     'codepipeline-pipeline-manual-approval-needed',
+    //   ],
+    //   targets: [snsTopic],
+    // });
 
-    rule.addTarget(slackConfig);
+    // rule.addTarget(slackConfig);
 
     /* ---------- Tags ---------- */
     Tags.of(this).add('Context', `${tag}`);
