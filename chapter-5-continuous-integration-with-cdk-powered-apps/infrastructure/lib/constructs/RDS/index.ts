@@ -38,11 +38,11 @@ export class RDS extends Construct {
         credentials: rds.Credentials.fromSecret(this.credentials),
         databaseName: 'todolist',
         engine: rds.DatabaseInstanceEngine.mysql({
-          version: rds.MysqlEngineVersion.VER_8_0_28,
+          version: rds.MysqlEngineVersion.VER_8_0_32,
         }),
         instanceIdentifier: instance_id,
         instanceType: ec2.InstanceType.of(
-          ec2.InstanceClass.T2,
+          ec2.InstanceClass.T3,
           ec2.InstanceSize.SMALL,
         ),
         port: 3306,
